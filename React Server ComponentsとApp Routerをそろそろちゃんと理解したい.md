@@ -90,12 +90,21 @@ https://react.dev/learn/render-and-commit#epilogue-browser-paint
 
 ### Next.js のレンダリング方式について
 
-本の内容も参考に
+次に、Next.js のレンダリング方式についてまとめていきます。
+
+React の場合は基本的には CSR での描画を行なっていましたが、Next.js では様々なレンダリング方式を選択できます。
 
 - SSR
 - CSR
 - ISR
 - SSG
+
+それぞれを簡単に解説していきます。
+
+参考 1: https://nextjs.org/docs/app/building-your-application/rendering
+参考 2: https://nextjs.org/docs/pages/building-your-application/rendering
+
+本の内容も参考に
 
 ### ハイドレーションとは
 
