@@ -111,6 +111,8 @@ React の場合は基本的には CSR での描画を行なっていましたが
 7 歳娘「パパ、React の Hydration Error ってなんで起こるの？」
 https://qiita.com/Yametaro/items/22cde58cd6abf577f1a4
 
+https://react.dev/reference/react-dom/client/hydrateRoot
+
 ### RSC とは何か？
 
 ### App Router とは何か？
