@@ -8,6 +8,8 @@
 ※全ての資料を読んで完璧にする
 ※ChatGPT で誤字脱字の修正
 ※ブログと Qiita に同じ内容投稿すればいいやん（ちょっと変えてもいいし）
+※網羅性を高める
+※ユーザー視点。何が知りたいか？ISR とか必要？
 
 ## React Server Components と App Router を今度こそちゃんと理解する
 
@@ -110,6 +112,19 @@ https://react.dev/learn/render-and-commit#epilogue-browser-paint
 
 次にこの Static Generation と Server-side Rendering を含めた Next.js のレンダリング種別について解説していきます。
 
+### ハイドレーションとは
+
+ハイドレーションとは、サーバー側からレンダリングされた HTML に紐付けられた JavaScript を実行し、対象のページを完成された状態にすることです。
+
+要はこういう流れです。
+
+1. (SSR などで)サーバー側から HTML が返る
+2. クライアント側の JavaScript を実行する(イベントリスナの登録やインタラクティブな動作の追加)
+
+サーバから受け取った初期 HTML は、インタラクティブな機能を持たない乾いた HTML で、そこに、クライアント側で水分（必要な設定や機能）を加えてやるイメージです。
+
+主に SSR のようにサーバー側で HTML を生成して返す場合に使用されます。
+
 ### Next.js のレンダリング種別について
 
 React の場合は基本的には CSR での描画を行なっていましたが、Next.js では以下のように様々なレンダリング方式を選択できます。
@@ -169,13 +184,6 @@ Next.js では useEffect フックを使用するなどして CSR を実装す�
 
 ※本の内容も参考に
 
-### ハイドレーションとは
-
-7 歳娘「パパ、React の Hydration Error ってなんで起こるの？」
-https://qiita.com/Yametaro/items/22cde58cd6abf577f1a4
-
-https://react.dev/reference/react-dom/client/hydrateRoot
-
 ### RSC とは何か？
 
 ### App Router とは何か？
@@ -191,6 +199,10 @@ SSG は？サーバーサイドでのレンダリングのみではなく？
 ### SSR ト App Router(RSC)をどう使い分ける？
 
 ### App Router(RSC)のサンプル実装
+
+### React の Suspense とは何か？
+
+https://eh-career.com/engineerhub/entry/2023/07/14/093000
 
 ### まとめ
 
