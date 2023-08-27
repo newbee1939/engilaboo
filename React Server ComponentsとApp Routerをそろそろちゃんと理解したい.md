@@ -186,7 +186,45 @@ Next.js では useEffect フックを使用するなどして CSR を実装す�
 
 ### RSC とは何か？
 
+- https://twitter.com/newbee1939/status/1680942624600117250
+
+連休最終日、React Server Components および Next.js の App Router(App Directory)について、主に以下の記事を使って学んだので、自分なりに理解したことを連投でまとめてみます。
+
+- https://zenn.dev/suzu_4/articles/2e6dbb25c12ee5
+- https://zenn.dev/uhyo/articles/react-server-components-multi-stage
+- https://zenn.dev/g4rds/articles/287c53498d17a1
+- https://eh-career.com/engineerhub/entry/2023/07/14/093000
+
+そもそも、Next.js には SSR（Server Side Rendering）という、React を Node.js 上で動作させる仕組みがあります。SSR を使用することで、初期レンダリング時にサーバー側で HTML を生成してレンダリングすることができます。これにより、コンテンツがしっかりと詰まった状態の初期画面が表示されるため、SEO の面でも効果があるとされています。
+
+しかし、SSR には「ハイドレーション」という仕組みが存在します。これは、SSR で HTML 等をレンダリングした後に、フロントエンドでイベントリスナを登録したり、インタラクティブな動作を追加する機能です。
+
+これは SSR を実現する上でとても重要な機能です。
+
+しかし、ハイドレーションを実行するためには、フロント側にコンポーネント（アプリ）全体のデータを送信する必要があり、その結果 bundle サイズが増加してしまいます。bundle サイズの増加はパフォーマンスの悪化に直結します。
+
+そこで生まれたのが React Server Components とその仕組みを組み込んだ Next.js の App Router（App Directory）です。
+
+React Server Components は React のコンポーネントをサーバー側で実行する仕組みです。React アプリケーションをサーバー側で処理する部分とクライアント側で処理する部分に分け、サーバー側で実行可能なコンポーネントをサーバー側で実行することで、クライアント側のコードが減る（クライアントに送る JavaScript の bundle サイズが減る）ため、パフォーマンスの改善が期待できます。
+
+そして、Next.js の App Router は React Server Components を組み込んだ仕組みです。
+
+App Router では、デフォルトで RSC（React Server Components）が適用されます。つまり、作成したコンポーネントがサーバー側で実行されるということです。クライアント側で実行させるには、`use client` を定義する必要があります。
+
+できるだけサーバー側に処理を寄せることで、パフォーマンスの改善を図るという意図が読み取れます。
+
+React Server Components と SSR は同じ仕組みでも相反する仕組みでもなく、それぞれ異なる責任領域を持つ仕組みです。
+
+これらを組み合わせることで、SSR によって初期表示を速くしつつ、React Server Components によって（今まではクライアント単体だった）コンポーネントをクライアントとサーバー用に分割し、できるだけサーバー側で処理させることで、SSR のハイドレーション時の bundle サイズを最小限に抑えることができます。
+
+React Server Components と SSR を組み合わせることで、SEO の最適化を図る一方で、パフォーマンスの面でも最適化を図ることが可能です。
+
+- https://nextjs.org/docs/app
+- https://nextjs.org/docs/app/building-your-application/upgrading/app-router-migration
+
 ### App Router とは何か？
+
+https://nextjs.org/docs/app/building-your-application/rendering
 
 ### SSR と App Router(RSC)の違いについて
 
