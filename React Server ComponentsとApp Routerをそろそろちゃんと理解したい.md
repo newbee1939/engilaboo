@@ -158,12 +158,11 @@ ISR の実装は、Next.js のページごとに revalidate というパラメ�
 
 #### CSR
 
-React は JavaScript でページを描画しています。この単純な使い方が CSR です。
-もともとの React アプリケーションに近い描画方法なので、簡単ですね。
+CSR は（先ほど説明した）React のデフォルトのレンダリング方式です。
 
-CSR の弱点は、ブラウザで表示したときに JavaScript で描画するために、初期状態でコンテンツがなく、SEO に有効ではない点があげられます。
+ブラウザ上で JavaScript を実行して DOM を生成しコンテンツを表示させます。
 
-React はこれ？
+Next.js では useEffect フックを使用するなどして CSR を実装することができます。
 
 参考 1: https://nextjs.org/docs/app/building-your-application/rendering
 参考 2: https://nextjs.org/docs/pages/building-your-application/rendering
