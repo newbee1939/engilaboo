@@ -265,103 +265,63 @@ App Router には他にも様々な機能がありますが、この記事では
 
 ### SSR と App Router(RSC)の違いについて
 
-一言で理解する React: https://zenn.dev/uhyo/articles/react-server-components-multi-stage
+次に、SSR と RSC の違いについて、図を交えつつ解説します。
 
-RSC はフレームワークを介して使うことが多い。
-フレームワークは普通 SSR もサポートしているので、実用上は RSC と SSR を併用することが多い。
+SSR は、以下のようにレンダリングされます。
 
-RSC と SSR は併用される。
+[図を貼る]
 
-ここが SSR 要素。
-本来クライアント側で行うレンダリングをサーバー側でも行う
+1. サーバー側で全体をレンダリングし、生の HTML にする
+2. 生成した HTML を DOM に反映させてクライアント側で表示（ペインティング）する（初期表示を早める）
+3. bundle した JavaScript（コンポーネント）をクライアントに送信しハイドレーションを行う
 
-!!tech-memo の uhyo さんの写真!! ↑
-SSR というのは、全部をただの HTML にしてしまって、それをブラウザに送ることで、最初に JavaScript を実行しなくてもペインティングされる。
-その目的のためにクライアント側も全部 HTML 文字列にしちゃう。
+最初にブラウザ側で HTML を生成してクライアント側に反映させることで初期表示を早めるのが最大の特徴です。
 
-サーバ・コンポーネントのコードがクライアントに送られることはない。React を使った SSR の多くの実装では、コンポーネント・コードは JavaScript バンドルを通してクライアントに送られます。これはインタラクティブ性を遅らせる可能性があります。
+RSC では、以下のようにレンダリングされます。
 
-RSC と SSR を組み合わせることで、サーバー側でクライアントコンポーネントとサーバーコンポーネントのレンダリングをし、HTML を生成した後に、クライアント側にクライアントコンポーネントの bundle javascript を送信し、ハイドレーションを行います。
+[図を貼る]
 
-つまり、SSR と RSC を組み合わせることで、初期表示を早めつつ（サーバー側でサーバーコンポーネントとクライアントコンポーネントの HTML を生成）、クライアント側に最小限の JavaScript（クライアントコンポーネント）しか送信されないようにできるため、パフォーマンスを高めることがでできます。
+1. サーバー側でサーバーコンポーネントをレンダリングする
+2. サーバーコンポーネントの HTML とクライアントコンポーネントの JavaScript をクライアントに送信する
+3. クライアントコンポーネントをレンダリングする
+4. 生成した HTML を DOM に反映させてクライアント側で表示する
 
-### SSR ト App Router(RSC)をどう使い分ける？
+大きな違いは以下の二つです。
+・SSR の場合は初期表示が速い
+・SSR の方がクライアントに送信される JavaScript の量が多い
 
-ややこしいので注意してほしい点は、RSC の導入後は、「SSR」とは「サーバーサイドでも stage 1 の実行を行い、生成された HTML をレスポンスに埋め込んで返すこと」を指すことになります。RSC より前の時代は SSR は「アプリケーション全体（stage 1 のみ）をサーバーサイドでも実行すること」でしたから、RSC を「サーバー側に stage 0 が追加されるもの」と考えれば理解できます。誰が何を実行するのかは次のように整理できます。
+この SSR と RSC は交わらない技術ではなく、組み合わせて使用することもできます。
+SSR と RSC を組み合わせた場合、処理の流れは以下のようになります。
 
-従来の SSR: Pages Router ということで、そもそも stage0(サーバー側のコンポーネント)と stage1(クライアント側のコンポーネント)の区別ない（stage1 しかない）中で、stage1 のみをサーバー側でレンダリングする
+[画像貼る]
 
-RSC のみ:サーバー側で stage 0 を実行 → クライアント側で stage 1 を実行
+1. サーバー側でサーバーコンポーネントをレンダリングする
+2. サーバー側でクライアントコンポーネントもレンダリングする
+3. 生成したサーバーコンポーネントとクライアントコンポーネントの HTML をクライアント側に送信して DOM に反映させてクライアント側で表示させる
+4. クライアント側に bunde した JavaScript（クライアントコンポーネント）を送信し、レンダリングをハイドレーションを実行する
 
-RSC+SSR: サーバー側で stage 0 を実行するだけでなく、サーバーサイドでも stage 1 の実行を行い、生成された HTML をレスポンスに埋め込んで返すこと
+このように、SSR と RSC を組み合わせることで、初期表示を早めつつ、クライアント側に送信する JavaScript の量を抑えることができます。
 
-図にしてもいいかも。実験で確認できない？それぞれのサンプルをサクッと作って
+そのため、基本的には RSC 単体で使うよりも、RSC と SSR を組み合わせて使うことの方が多いでしょう。
 
-rsc: https://zenn.dev/uhyo/articles/react-server-components-multi-stage
+参考: 一言で理解する React(https://zenn.dev/uhyo/articles/react-server-components-multi-stage)
 
-従来型（SSR なし） - : stage 1
-従来型（SSR あり） stage 1 : stage 1
-RSC（SSR なし） stage 0 : stage 1
-RSC（SSR あり） stage 0 + stage 1 : stage 1
-
-RSC でサーバー側で HTML 生成するのに、RSC+SSR を組み合わせる意味は？理由は？メリットは？
-クライアント側の HTML も乾いた HTML としてフロントに送りたいから？
-誰かに質問したい。。実験で確かめられない？
-
-### App Router(RSC)のサンプル実装
-
-### React の Suspense とは何か？
-
-Suspense のサポートにより、SSR 時も非同期的なレンダリングが可能になった。(Streaming 対応 SSR)
-
-https://eh-career.com/engineerhub/entry/2023/07/14/093000
-
-とはいえ、理解すべきことはたった一つです。Suspense では（より正確に言えば React 18 の Concurrent Rendering という機能では）、コンポーネントそのものが「ローディング中なのでまだレンダリングできない」という状態になることがあります。
-
-https://www.youtube.com/watch?v=WHMm6w41_WI&ab_channel=TimeeEngineering
-
-https://qiita.com/uhyo/items/bbc22022fe846fd2b763
-
-https://prismic.io/blog/what-is-react-suspense
-
-### まとめ
-
-分かりやすく。ここでか見たら分かるようにする。
-
-### 参考資料
-
-## 既存のアプリの Pages Router から App Router への移行を試してみる..!
-
-勉強になりそう。
-
-## React の RSC のチュートリアル、公式など
-
-## App Router のチュートリアル、公式など
-
----
-
-- 同じ画面を App Router, SSR, SSG とかで試してみる
-
-※全ての資料を読んで完璧にする
-※ChatGPT で誤字脱字の修正
-※ブログと Qiita に同じ内容投稿すればいいやん（ちょっと変えてもいいし）
-※網羅性を高める
-※ユーザー視点。何が知りたいか？ISR とか必要？
-※YouTube とかも
-※これを参考にブログにまとめたものを参考に LT 資料作る
-※具体例も載せるようにする
-
-RSC 使っても転送量は減らないかも。単純な話ではない。
-https://qiita.com/uhyo/items/06b0cd7292256f66d7b7
-
-この記事とても分かりやすい。
-https://www.freecodecamp.org/news/how-to-use-react-server-components/
+### 実際に RSC・App Router を触ってみる
 
 サーバーコンポーネントとクライアントコンポーネントを二つ作って実験
 
-これが良い: https://postd.cc/how-react-server-components-work/
+### まとめ
 
-Pages Router から App Router への移行
-これも良い: https://www.youtube.com/watch?v=WHMm6w41_WI&ab_channel=TimeeEngineering
+分かりやすく。
 
-useEffect との組み合わせは？
+### 主な参考資料
+
+参考 1: 一言で理解する React(https://zenn.dev/uhyo/articles/react-server-components-multi-stage)
+参考 2: React Server Components – How and Why You Should Use Them in Your Code(https://www.freecodecamp.org/news/how-to-use-react-server-components/)
+参考 3: What's "Next" JS Meetup(https://www.youtube.com/watch?v=WHMm6w41_WI&ab_channel=TimeeEngineering)
+参考 4: Next.js 公式ドキュメント(https://nextjs.org/docs)
+参考 5: React Server Components の仕組み：詳細ガイド(https://postd.cc/how-react-server-components-work/)
+
+---
+
+※ChatGPT で誤字脱字等の修正
