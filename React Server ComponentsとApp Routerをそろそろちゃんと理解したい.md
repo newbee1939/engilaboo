@@ -318,6 +318,9 @@ SSR と RSC を組み合わせた場合、処理の流れは以下のように�
 ・RSC(サーバーコンポーネントとクライアントコンポーネント)
 ・SSR+RSC(サーバーコンポーネントとクライアントコンポーネント)
 
+- link1: nextjs-pages-router-sample(https://github.com/newbee1939/nextjs-pages-router-sample)
+- link2: nextjs-app-router(https://github.com/newbee1939/nextjs-app-router)
+
 まずは Pages Router の CSR からです。
 
 ...
