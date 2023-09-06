@@ -236,12 +236,13 @@ RSC とは、一言で言うと、コンポーネントを「サーバー側で�
 2. クライアントコンポーネントのレンダリング
    クライアントはサーバーからデータのストリームを受信し、ReactDOM を使用してクライアントコンポーネントをレンダリングします。クライアントはまた、どのサーバーコンポーネントがレンダリング済みで、どれがまだ保留中かを追跡します。
 
-RSC により、クライアント側に送信する JavaScript のサイズ（bundle サイズ）が減少するため、パフォーマンスが向上すると言われています。
+RSC により、データ取得等をより DB に近いサーバー側で実行できる＋クライアント側に送信する JavaScript のサイズ（bundle サイズ）が減少するため、パフォーマンスが向上すると言われています。
 
 さらに、以下のような特徴があります。
 
 ・サーバー側からより高速にデータ取得が可能になる
 ・console.log はブラウザのコンソールではなく、サーバーのコンソールに情報を記録する
+・onClick や onChange などのイベントリスナーは使用できない
 ・状態管理（useState）と効果管理（useEffect）は使用できない
 ・サーバーコンポーネントはクライアントコンポーネントをインポートしてレンダリングできまるが、クライアントコンポーネントはその中のサーバーコンポーネントをレンダリングできない
 
@@ -257,7 +258,7 @@ App Router では、デフォルトで RSC（React Server Components）が適用
 
 クライアント側で実行させるには、`use client` を定義する必要があります。
 
-comment: できるだけサーバー側に処理を寄せることで、パフォーマンスの改善を図るという意図が読み取れます。
+comment: できるだけサーバー側に処理を寄せることで、パフォーマンスの改善を図るという意図が読み取れます。基本的にはサーバーコンポーネントとして実装して、必要な箇所だけクライアントで実行させると良いでしょう
 
 現在では、Pages Router より App Router の利用が推奨されています。
 
@@ -310,6 +311,7 @@ SSR と RSC を組み合わせた場合、処理の流れは以下のように�
 
 次に、実際にアプリを動かしつつ、挙動を確かめていこうと思います。
 ※他で同じようなことをやっている記事があれば参考にする
+※これ使うと分かりやすそう: https://zenn.dev/ms5/articles/f9173936299b1d
 
 [Pages Router]
 ・CSR
@@ -337,6 +339,11 @@ SSR と RSC を組み合わせた場合、処理の流れは以下のように�
 参考 3: What's "Next" JS Meetup(https://www.youtube.com/watch?v=WHMm6w41_WI&ab_channel=TimeeEngineering)
 参考 4: Next.js 公式ドキュメント(https://nextjs.org/docs)
 参考 5: React Server Components の仕組み：詳細ガイド(https://postd.cc/how-react-server-components-work/)
+参考 6: Nextjs で理解する React Server Components 徹底解説【React18】(https://youtu.be/A78v05JSyqg?si=EJiKhE35K11TbcGe)
+参考 7: Understanding React Server Components(https://vercel.com/blog/understanding-react-server-components)
+参考 8: React Server Components with Next.js(https://vercel.com/blog/everything-about-react-server-components)
+参考 9: Server-side rendering(https://www.apollographql.com/docs/react/performance/server-side-rendering/)
+参考 10: How React 18 Improves Application Performance(https://vercel.com/blog/how-react-18-improves-application-performance)
 
 ---
 
