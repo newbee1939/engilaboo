@@ -328,6 +328,24 @@ SSR と RSC を組み合わせた場合、処理の流れは以下のように�
 
 まずは Pages Router の CSR からです。
 
+次に SSR です。
+
+次に RSC(サーバーコンポーネントとクライアントコンポーネント)です。
+
+<!-- App Routerだとデフォルトでこれもサーバーサイドで実行される -->
+
+```typescript
+export default function Home() {
+  console.log(
+    "これが実行されると、ブラウザの検証ツールではなくターミナル(Node.js)で出るはず"
+  );
+
+  return <p>React Server Components</p>;
+}
+```
+
+次に SSR+RSC(サーバーコンポーネントとクライアントコンポーネント)です。
+
 ...
 
 ### まとめ
