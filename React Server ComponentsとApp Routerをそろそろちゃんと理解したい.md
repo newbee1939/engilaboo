@@ -233,16 +233,16 @@ RSC とは、一言で言うと、コンポーネントを「サーバー側で�
 流れは以下の通りです。
 
 1. サーバーコンポーネントのレンダリング
-   サーバーはサーバーコンポーネントをレンダリングし、その出力をデータのストリームとしてクライアントに送信します。出力には、どのクライアントコンポーネントをブラウザ上でレンダリングする必要があるかという情報と、そのプロップが含まれます。
+   サーバーコンポーネントを React Server Component Payload（RSC ペイロード）と呼ばれる特別なデータ形式にレンダリングします。この RSC ペイロードとクライアントコンポーネント JavaScript 命令を使用して、サーバーに HTML をレンダリングします。
 
 2. クライアントコンポーネントのレンダリング
-   クライアントはサーバーからデータのストリームを受信し、ReactDOM を使用してクライアントコンポーネントをレンダリングします。クライアントはまた、どのサーバーコンポーネントがレンダリング済みで、どれがまだ保留中かを追跡します。
+   クライアントはサーバーから受信した RSC ペイロードとクライアント・コンポーネント を使用して、サーバー上に HTML をレンダリングします。
 
 RSC により、データ取得等をより DB に近いサーバー側で実行できる＋クライアント側に送信する JavaScript のサイズ（bundle サイズ）が減少するため、パフォーマンスが向上すると言われています。
 
 さらに、以下のような特徴があります。
 
-・サーバー側からより高速にデータ取得が可能になる
+・サーバー側からより高速にデータ取得が可能になる（クライアントからのリクエスト量も減る）
 ・console.log はブラウザのコンソールではなく、サーバーのコンソールに情報を記録する
 ・onClick や onChange などのイベントリスナーは使用できない
 ・状態管理（useState）と効果管理（useEffect）は使用できない
@@ -312,23 +312,39 @@ SSR と RSC を組み合わせた場合、処理の流れは以下のように�
 ### 実際に RSC・App Router を触ってみる
 
 次に、実際にアプリを動かしつつ、挙動を確かめていこうと思います。
-※他で同じようなことをやっている記事があれば参考にする
-※これ使うと分かりやすそう: https://zenn.dev/ms5/articles/f9173936299b1d
+※使用ツール: https://zenn.dev/ms5/articles/f9173936299b1d
 
-[Pages Router]
-・CSR
-・SSR
+以下のコマンドで Next.js をインストールし、確かめます。
+
+```
+npx create-next-app@latest .
+```
 
 [App Router]
-・RSC(サーバーコンポーネントとクライアントコンポーネント)
-・SSR+RSC(サーバーコンポーネントとクライアントコンポーネント)
+
+- RSC
+  - サーバーコンポーネント単体で実行
+  - クライアントコンポーネント単体で実行
+  - サーバーコンポーネントとクライアントコンポーネントを組み合わせて実行
+- SSR+RSC(サーバーコンポーネントとクライアントコンポーネント)
+
+  - Server Components のレンダリングの種類について
+  - https://nextjs.org/docs/app/building-your-application/rendering/server-components#server-rendering-strategies
+  - App Router の Server Components には、主に Static と Dynamic の二つのレンダリング方式があります。
+  - Static(default)
+    - 静的レンダリングは、静的なブログ記事や製品ページのように、ルートがユーザーにパーソナライズされておらず、ビルド時に知ることができるデータを持つ場合に便利
+  - Dynamic
+    - ダイナミック・レンダリングでは、ルートはリクエスト時にユーザーごとにレンダリングされる。
+  - デフォルトでは Static が選択されます。
+  - ただ、レンダリング中に、動的関数またはキャッシュされていないデータ要求が検出されると、Next.js はルート全体の動的レンダリングに切り替えます。この表は、動的関数とデータキャッシュが、ルートを静的にレンダリングするか動的にレンダリングするかにどのように影響するかをまとめたものです
+    - 図があるので貼る
+    - Next.js は、使用する機能と API に基づいて、各ルートに最適なレンダリング戦略を自動的に選択します。その代わりに、特定のデータをキャッシュまたは再検証するタイミングを選択したり、UI の一部をストリーム配信することもできます。
+    - 動的関数は、ユーザーのクッキー、現在のリクエストヘッダ、URL の検索パラメータなど、リクエスト時にしかわからない情報に依存します。Next.js では、このような動的関数は次のようになります：
+      - cookies() と headers() です：これらをサーバーコンポーネントで使用すると、リクエスト時にルート全体が動的レンダリングになります。
+      - これらの関数のいずれかを使用すると、リクエスト時にルート全体がダイナミックレンダリングになります。
 
 - link1: nextjs-pages-router-sample(https://github.com/newbee1939/nextjs-pages-router-sample)
 - link2: nextjs-app-router(https://github.com/newbee1939/nextjs-app-router)
-
-まずは Pages Router の CSR からです。
-
-次に SSR です。
 
 次に RSC(サーバーコンポーネントとクライアントコンポーネント)です。
 
@@ -364,6 +380,7 @@ export default function Home() {
 参考 8: React Server Components with Next.js(https://vercel.com/blog/everything-about-react-server-components)
 参考 9: Server-side rendering(https://www.apollographql.com/docs/react/performance/server-side-rendering/)
 参考 10: How React 18 Improves Application Performance(https://vercel.com/blog/how-react-18-improves-application-performance)
+参考 11: Next.js から学ぶ Web レンダリング ~React 誕生以前から App Router with RSC までの流れ~(https://zenn.dev/suzu_4/articles/2e6dbb25c12ee5)
 
 ---
 
@@ -371,3 +388,4 @@ export default function Home() {
 ※先ずはブログに分かりやすくまとめる->プレゼンの本を踏襲しつつ LT 資料を作る
 ※他にも本とか資料とか漁りまくる
 ※App Router でのレンダリング実装。getSSP とかはないはず。どういう仕組み？
+※Suspense も入れる？どういう関係性？: https://youtu.be/A78v05JSyqg?si=PIbyu-_mpuKwQWOk
