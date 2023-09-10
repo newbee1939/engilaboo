@@ -467,6 +467,7 @@ JS の bundle サイズが減ることを見せる
 参考 10: How React 18 Improves Application Performance(https://vercel.com/blog/how-react-18-improves-application-performance)
 参考 11: Next.js から学ぶ Web レンダリング ~React 誕生以前から App Router with RSC までの流れ~(https://zenn.dev/suzu_4/articles/2e6dbb25c12ee5)
 参考 12: Render and Commit(https://react.dev/learn/render-and-commit)
+参考 13: Making Sense of React Server Components(https://www.joshwcomeau.com/react/server-components/)
 
 ---
 
