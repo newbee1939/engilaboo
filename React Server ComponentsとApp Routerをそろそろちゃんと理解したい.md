@@ -297,17 +297,8 @@ SSR は、以下のようにレンダリングされます。
 最初にブラウザ側で HTML を生成してクライアント側に反映させることで初期表示を早めるのが最大の特徴です。
 
 RSC では、以下のようにレンダリングされます。
-RSC のレンダリングの流れは以下の通りです。
 
 [画像]
-
-1. サーバーコンポーネントのレンダリング
-   サーバーコンポーネントを React Server Component Payload（RSC ペイロード）と呼ばれる特別なデータ形式にレンダリングします。この RSC ペイロードとクライアントコンポーネント JavaScript 命令を使用して、サーバーに HTML をレンダリングします。
-
-2. クライアントコンポーネントのレンダリング
-   クライアントはサーバーから受信した RSC ペイロードとクライアント・コンポーネント を使用して、サーバー上に HTML をレンダリングします。
-
-[図を貼る]
 
 1. サーバー側でサーバーコンポーネントをレンダリングする
 2. サーバーコンポーネントの HTML とクライアントコンポーネントの JavaScript をクライアントに送信する
@@ -316,6 +307,7 @@ RSC のレンダリングの流れは以下の通りです。
 
 大きな違いは以下の二つです。
 ・SSR の場合は初期表示が速い
+・RSC の場合はサーバーとクライアントでそれぞれのコンポーネントがレンダリングされる
 ・SSR の方がクライアントに送信される JavaScript の量が多い
 
 この SSR と RSC は交わらない技術ではなく、組み合わせて使用することもできます。
@@ -326,53 +318,47 @@ SSR と RSC を組み合わせた場合、処理の流れは以下のように�
 1. サーバー側でサーバーコンポーネントをレンダリングする
 2. サーバー側でクライアントコンポーネントもレンダリングする(ここが SSR 要素。本来クライアント側で行うレンダリングをサーバー側でも行う)(これにより従来と同じただの HTML 文字列をサーバー側で得られる)
 3. 生成したサーバーコンポーネントとクライアントコンポーネントの HTML をクライアント側に送信して DOM に反映させてクライアント側で表示させる
-4. クライアント側に bunde した JavaScript（クライアントコンポーネント）を送信し、レンダリングをハイドレーションを実行する
+4. クライアント側に bunde した JavaScript（クライアントコンポーネント）を送信し、レンダリングとハイドレーションを実行する
 
 このように、SSR と RSC を組み合わせることで、初期表示を早めつつ、クライアント側に送信する JavaScript の量を抑えることができます。
 
 そのため、基本的には RSC 単体で使うよりも、RSC と SSR を組み合わせて使うことの方が多いでしょう。
 
-参考: 一言で理解する React(https://zenn.dev/uhyo/articles/react-server-components-multi-stage)
-
 ### React Server Components とデータの取得について
 
-ここまでは、特に外部からのデータの取得は意識せずに解説してきました。
+ここまでは、特に「外部からのデータの取得」は意識せずに解説してきました。
 
 しかし、実際のアプリケーションだと外部（DB や API）からデータを取得して使用することが多いでしょう。
 
 次に、その場合にどういった流れになるのかについて解説します。
 
-もともと、クライアント側（SSR しないアプリケーション）では useState 等を使ってローディング中の状態を表現することで、コンポーネント単位での非同期的なデータ取得が可能でした。(React と Next.js を使った SSR は、インタラクティブでないページをできるだけ早くユーザーに表示することで、知覚される読み込みパフォーマンスを向上させます。
-)
+もともと、クライアント側（SSR しないアプリケーション）では useState 等を使ってローディング中の状態を表現することで、コンポーネント単位での非同期的なデータ取得が可能でした。
 
-しかし、SSR をする場合（初期ペインティングの時点でデータが欲しい場合）、useState 等を使ってサーバー側でコンポーネント単位で非同期的なデータ取得ができない問題がありました。（レンダリングの最中にデータフェッチングを行うのは不可だった）(しかし、ページをユーザーに表示する前に、サーバーでのデータ取得をすべて完了させる必要があるため、やはり遅くなることがある。
-)
-ストリーミングでは、ページの HTML を小さなチャンクに分解し、それらのチャンクをサーバーからクライアントに徐々に送信することができます。
-これにより、UI がレンダリングされる前にすべてのデータがロードされるのを待つことなく、ページの一部がより早く表示されるようになる。
-ストリーミングは React のコンポーネントモデルと相性が良い。優先順位の高いコンポーネント（商品情報など）やデータに依存しないコンポーネントは、最初に送信することができ（レイアウトなど）、React はより早くハイドレーションを開始することができる。優先順位の低いコンポーネント（レビューや関連商品など）は、データが取得された後、同じサーバーリクエストで送信できます。
-ストリーミングは、Time To First Byte（TTFB）と First Contentful Paint（FCP）を削減できるため、長いデータリクエストがページのレンダリングをブロックするのを防ぎたい場合に特に有益です。また、特に低速のデバイスでは、Time to Interactive（TTI）の改善にも役立ちます。
+しかし、SSR をする場合（初期ペインティングの時点で表示用のデータが欲しい場合）、useState 等を使ってサーバー側でコンポーネント単位で非同期的なデータ取得ができない問題がありました。
 
-Next.js の getServerSideProps を使ってデータの取得はできていましたが、データ取得が「同期的」という課題がありました。（全てのデータが取得し終わるまで画面がペインティングされない）
+Next.js の getServerSideProps を使ってデータの取得はできていましたが、データ取得が「同期的」という課題がありました。
+これだと、ページをユーザーに表示する前に、サーバーでのデータ取得をすべて完了させる必要があるため、ユーザーに対する画面の表示が遅れてしまうことがあります。
 
-しかし、この状況が Suspense の登場で変わります。
+しかし、この状況が Suspense と React Server Components の登場で変わります。
 
-Suspense とは、useState 等をに頼らずに「ローディング中」を表現できる機能です。
+Suspense とは、useState 等に頼らずに「ローディング中」を表現できる機能です。
 
 例えば、以下のようなコンポーネントを用意します。
 
 これを画面に表示すると、以下のようになります。
 
-[画像貼る]
+[GIF 貼る]
 
-useState を使わずにローディング中を表現できていることがわかるでしょう。
+useState を使わずに「ローディング中」を表現できていることがわかるでしょう。
 
-このように Suspense を使うことで、SSR を使用するサーバー側でも（getSSP を使わない）コンポーネント単位の非同期的なデータ取得ができるようになりました。SSR で描画するコンポーネントで async function を使用することができるようになりました
-完全にデータ取得をする前にユーザーは画面を見ることができる。(これにより、従来の ServerSideProps()といった方法を使わずに、直接関数コンポーネント内で await や Suspense を使用した非同期処理が可能になりました．)
-(ストリーミングは、優先順位の低い UI や、ルート全体のレンダリングをブロックするような遅いデータフェッチに依存する UI に便利です。例えば、商品ページのレビューなどです。)
+また、React Server Components では、async/await（非同期関数）を使用することができます。
+
+このように Suspense と React Server Components を使うことで、SSR を使用するサーバー側でも（getSSP を使わない）コンポーネント単位の非同期的なデータ取得ができるようになりました。
+
+これにより、完全にデータ取得をする前にユーザーは画面を見ることができます。
+従来の SSR よりも表示速度を早めることができるでしょう。
 
 Next.js の場合、Streaming SSR という機能でこれが使われています。
-※Streaming 対応 SSR: Suspense でまだ止まっている状態でも、そこまでで生成している HTML を先に出力してクライアントに送っちゃおう。続きは、Suspense が
-解除されたら続きのデータを送ろう
 
 [画像貼る]
 
@@ -386,85 +372,457 @@ RSC により、コンポーネントをクライアントコンポーネント�
 
 [画像貼る]
 
-この辺りは以下の動画がとても分かりやすいです。
+SSR でデータ取得をする場合、RSC を使用してサーバーコンポーネント内で Suspense を使って loading 中を表現しつつデータ取得をするのが現状の最適解と言えるでしょう。
 
-SSR でデータ取得をする場合、RSC を使用してサーバーコンポーネント内で Suspense を使って loading 中を表現しつつデータ取得をするのが最適解と言えるでしょう。
-https://nextjs.org/docs/app/building-your-application/rendering/server-components#streaming
-https://nextjs.org/docs/app/building-your-application/routing/loading-ui-and-streaming
+<ここまでのまとめ>
+
+- React は UI を簡単に構築するための JavaScript ライブラリ
+- Next.js は React のフレームワーク
+- React は以下の流れでレンダリング（CSR）を行う
+  1. レンダリングのトリガーを検知
+  2. ブラウザレンダリングする内容の決定
+  3. 変更を DOM に適用
+- Next.js には以下の二つのモード（ルーティング方式）がある
+  - Pages Router
+  - App Router
+- Next.js の Pages Router では以下の 4 つのレンダリング方式を選択できる
+  - SSR
+  - SSG
+  - ISR
+  - CSR
+- React Server Components とは、コンポーネントを「サーバー側でレンダリングされるコンポーネント」と「クライアント側でレンダリングされるコンポーネント」に分ける技術
+- Next.js の App Router では、デフォルトで作成したコンポーネントがサーバーコンポーネントになる
+  - クライアントコンポーネントにするには`use client;`を記述する必要がある
+- RSC と SSR を組み合わせることで、初期表示を早めつつ、クライアント側に送信する JavaScript の量を抑えることができる
+- Suspense と React Server Components を使うことで、SSR を使用するサーバー側でもコンポーネント単位の非同期的なデータ取得が可能となる
 
 ### 実際に RSC・App Router を触ってみる
 
-TS の環境構築の記事。
-
 次に、実際にアプリを動かしつつ、挙動を確かめていこうと思います。
-※使用ツール: https://zenn.dev/ms5/articles/f9173936299b1d
 
 簡単な操作なので、ぜひ読者の方も実際に試してみてください。
 
-以下のコマンドで Next.js をインストールし、確かめます。
+前提として、Node.js,npm,TypeScript は使える状態になっているとします。
+
+https://www.engilaboo.com/build-environment-of-typescript/
+
+まずは、以下のコマンドで Next.js をインストールします。
 
 ```
 npx create-next-app@latest .
 ```
 
-まずは、`app/page.tsx`に以下の記述を追加します。
-(とりあえず動画を)
+最初に、シンプルなサーバーコンポーネントとクライアントコンポーネントを作っていきます。
 
-[App Router]
+以下のファイルをそれぞれ作成してください。
 
-- RSC
-  - サーバーコンポーネント単体で実行
-  - クライアントコンポーネント単体で実行
-  - サーバーコンポーネントとクライアントコンポーネントを組み合わせて実行
-  - Streaming SSR を使ってデータ取得と loading 状態を実装
-  - 初期表示を早めることができる
-- SSR+RSC(サーバーコンポーネントとクライアントコンポーネント)
+[app/page.tsx]
 
-  - Server Components のレンダリングの種類について
-  - https://nextjs.org/docs/app/building-your-application/rendering/server-components#server-rendering-strategies
-  - App Router の Server Components には、主に Static と Dynamic の二つのレンダリング方式があります。
-  - Static(default)
-    - 静的レンダリングは、静的なブログ記事や製品ページのように、ルートがユーザーにパーソナライズされておらず、ビルド時に知ることができるデータを持つ場合に便利
-  - Dynamic
-    - ダイナミック・レンダリングでは、ルートはリクエスト時にユーザーごとにレンダリングされる。
-  - デフォルトでは Static が選択されます。
-  - ただ、レンダリング中に、動的関数またはキャッシュされていないデータ要求が検出されると、Next.js はルート全体の動的レンダリングに切り替えます。この表は、動的関数とデータキャッシュが、ルートを静的にレンダリングするか動的にレンダリングするかにどのように影響するかをまとめたものです
-    - 図があるので貼る
-    - Next.js は、使用する機能と API に基づいて、各ルートに最適なレンダリング戦略を自動的に選択します。その代わりに、特定のデータをキャッシュまたは再検証するタイミングを選択したり、UI の一部をストリーム配信することもできます。
-    - 動的関数は、ユーザーのクッキー、現在のリクエストヘッダ、URL の検索パラメータなど、リクエスト時にしかわからない情報に依存します。Next.js では、このような動的関数は次のようになります：
-      - cookies() と headers() です：これらをサーバーコンポーネントで使用すると、リクエスト時にルート全体が動的レンダリングになります。
-      - これらの関数のいずれかを使用すると、リクエスト時にルート全体がダイナミックレンダリングになります。
+```tsx
+import { ClientComponent } from "./components/ClientComponent";
+import { ServerComponent } from "./components/ServerComponent";
 
-- link1: nextjs-pages-router-sample(https://github.com/newbee1939/nextjs-pages-router-sample)
-- link2: nextjs-app-router(https://github.com/newbee1939/nextjs-app-router)
-
-次に RSC(サーバーコンポーネントとクライアントコンポーネント)です。
-
-<!-- App Routerだとデフォルトでこれもサーバーサイドで実行される -->
-
-```typescript
-export default function Home() {
-  console.log(
-    "これが実行されると、ブラウザの検証ツールではなくターミナル(Node.js)で出るはず"
+export default async function Home() {
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: "200px",
+      }}
+    >
+      <ClientComponent />
+      <ServerComponent />
+    </div>
   );
-
-  return <p>React Server Components</p>;
 }
 ```
 
-次に SSR+RSC(サーバーコンポーネントとクライアントコンポーネント)です。
+[app/components/ServerComponent.tsx]
 
-JS の bundle サイズが減ることを見せる
+```tsx
+export async function ServerComponent() {
+  const boxStyle = {
+    width: "400px",
+    height: "300px",
+    backgroundColor: "#006400",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  };
 
-...
+  const textStyle = { color: "white", footSize: "larger", fontWeight: "bold" };
 
-### まとめ
+  console.log("Server Componentを実行しています");
 
-分かりやすく。
+  return (
+    <div style={boxStyle}>
+      <p style={textStyle}>Server Component</p>
+    </div>
+  );
+}
+```
+
+[app/components/ClientComponent.tsx]
+
+```tsx
+"use client";
+
+export function ClientComponent() {
+  const boxStyle = {
+    width: "400px",
+    height: "300px",
+    backgroundColor: "#ffff00",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  };
+
+  const textStyle = { footSize: "larger", fontWeight: "bold", color: "black" };
+
+  console.log("Client Componentを実行しています");
+
+  return (
+    <div style={boxStyle}>
+      <p style={textStyle}>Client Component</p>
+    </div>
+  );
+}
+```
+
+App Router ではコンポーネントはデフォルトでサーバーコンポーネントになります。
+クライアントコンポーネントにするには、ページの最初に`use client;`を記述する必要があります。
+
+ここでは、サーバーコンポーネントとクライアントコンポーネントをそれぞれ作成し、root コンポーネントで両方を読み込みます。
+
+そして`npm run dev`でアプリケーションを実行します。
+localhost:3000 にアクセスすると、以下の画面が表示されるでしょう。
+
+[画像貼る]
+
+まずは開発者ツールのコンソールを開きます。
+すると、クライアントコンポーネントだけが表示されていることが分かると思います。
+
+逆にターミナルを見ると、サーバー側でサーバーコンポーネントが実行されていることが分かると思います。（SSR されているので、クライアントコンポーネントも実行されていますが）
+
+さらに、Network タブを見てみると、page.js は 39.2kB になっています。
+
+次に、以下のように全てのコンポーネントに`use client;`を付けます。
+
+[app/page.tsx]
+
+```tsx
+"use client";
+
+import { ClientComponent } from "./components/ClientComponent";
+import { ServerComponent } from "./components/ServerComponent";
+
+export default async function Home() {
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: "200px",
+      }}
+    >
+      <ClientComponent />
+      <ServerComponent />
+    </div>
+  );
+}
+```
+
+[app/components/ServerComponent.tsx]
+
+```tsx
+"use client";
+
+export async function ServerComponent() {
+  const boxStyle = {
+    width: "400px",
+    height: "300px",
+    backgroundColor: "#006400",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  };
+
+  const textStyle = { color: "white", footSize: "larger", fontWeight: "bold" };
+
+  console.log("Server Componentを実行しています");
+
+  return (
+    <div style={boxStyle}>
+      <p style={textStyle}>Server Component</p>
+    </div>
+  );
+}
+```
+
+[app/components/ClientComponent.tsx]
+
+```tsx
+"use client";
+
+export function ClientComponent() {
+  const boxStyle = {
+    width: "400px",
+    height: "300px",
+    backgroundColor: "#ffff00",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  };
+
+  const textStyle = { footSize: "larger", fontWeight: "bold", color: "black" };
+
+  console.log("Client Componentを実行しています");
+
+  return (
+    <div style={boxStyle}>
+      <p style={textStyle}>Client Component</p>
+    </div>
+  );
+}
+```
+
+この状態で再度画面を表示します。そして、ネットワークタブを見ると、page.js のサイズが 40.6kB になっています。
+ServerComponent をクライアントコンポーネンにした分、サイズが増加していることが分かると思います。
+
+今度は逆に、以下のように全てのコンポーネントから`use client`を消します。
+
+[app/page.tsx]
+
+```tsx
+import { ClientComponent } from "./components/ClientComponent";
+import { ServerComponent } from "./components/ServerComponent";
+
+export default async function Home() {
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: "200px",
+      }}
+    >
+      <ClientComponent />
+      <ServerComponent />
+    </div>
+  );
+}
+```
+
+[app/components/ServerComponent.tsx]
+
+```tsx
+export async function ServerComponent() {
+  const boxStyle = {
+    width: "400px",
+    height: "300px",
+    backgroundColor: "#006400",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  };
+
+  const textStyle = { color: "white", footSize: "larger", fontWeight: "bold" };
+
+  console.log("Server Componentを実行しています");
+
+  return (
+    <div style={boxStyle}>
+      <p style={textStyle}>Server Component</p>
+    </div>
+  );
+}
+```
+
+[app/components/ClientComponent.tsx]
+
+```tsx
+export function ClientComponent() {
+  const boxStyle = {
+    width: "400px",
+    height: "300px",
+    backgroundColor: "#ffff00",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  };
+
+  const textStyle = { footSize: "larger", fontWeight: "bold", color: "black" };
+
+  console.log("Client Componentを実行しています");
+
+  return (
+    <div style={boxStyle}>
+      <p style={textStyle}>Client Component</p>
+    </div>
+  );
+}
+```
+
+`use client;`を消して、サーバーコンポーネントに変更しました。
+
+この状態で再度画面を表示します。そして、ネットワークタブを見ると、page.js が消えていることが分かると思います。
+これは、コンポーネントの全てのレンダリングがサーバーサイドで行われたことを示しています。
+
+次に、Suspense を使ってサーバーコンポーネントでのデータ取得をシミュレーションします。
+
+それぞれ以下のように変更してください。
+
+[app/page.tsx]
+
+```tsx
+import { Suspense } from "react";
+import { ClientComponent } from "./components/ClientComponent";
+import Loading from "./components/loading";
+import { ServerComponent } from "./components/ServerComponent";
+
+export default async function Home() {
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: "200px",
+      }}
+    >
+      <ClientComponent />
+      <Suspense fallback={<Loading />}>
+        <ServerComponent />
+      </Suspense>
+    </div>
+  );
+}
+```
+
+[app/components/ServerComponent.tsx]
+
+```tsx
+const sleep = async (ms: number) => {
+  return new Promise((res) => setTimeout(res, ms));
+};
+
+export async function ServerComponent() {
+  console.log("ServerComponentを実行しています(sleepの前)");
+
+  // データの取得をイメージ
+  await sleep(3000);
+
+  const boxStyle = {
+    width: "400px",
+    height: "300px",
+    backgroundColor: "#006400",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  };
+
+  const textStyle = { color: "white", footSize: "larger", fontWeight: "bold" };
+
+  console.log("Server Componentを実行しています(sleepの後)");
+
+  return (
+    <div style={boxStyle}>
+      <p style={textStyle}>Server Component</p>
+    </div>
+  );
+}
+```
+
+[app/components/ClientComponent.tsx]
+
+```tsx
+"use client";
+
+export function ClientComponent() {
+  const boxStyle = {
+    width: "400px",
+    height: "300px",
+    backgroundColor: "#ffff00",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  };
+
+  const textStyle = { footSize: "larger", fontWeight: "bold", color: "black" };
+
+  console.log("Client Componentを実行しています");
+
+  return (
+    <div style={boxStyle}>
+      <p style={textStyle}>Client Component</p>
+    </div>
+  );
+}
+```
+
+さらに、以下の loading.tsx も追加します。
+
+```tsx
+export default function Loading() {
+  const boxStyle = {
+    width: "400px",
+    height: "300px",
+    backgroundColor: "#CACACA",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  };
+
+  const textStyle = { color: "black", fontSize: "larger", fontWeight: "bold" };
+
+  return (
+    <div style={boxStyle}>
+      <p style={textStyle}>...Loading</p>
+    </div>
+  );
+}
+```
+
+この状態で画面を表示すると、以下のようになります。
+
+[GIF 貼る]
+
+サーバー側で非同期的にデータを取得した上で画面の表示ができていることが分かると思います。
+
+## まとめ
+
+最後にもう一度内容をまとめておきます。
+
+- React は UI を簡単に構築するための JavaScript ライブラリ
+- Next.js は React のフレームワーク
+- React は以下の流れでレンダリング（CSR）を行う
+  1. レンダリングのトリガーを検知
+  2. ブラウザレンダリングする内容の決定
+  3. 変更を DOM に適用
+- Next.js には以下の二つのモード（ルーティング方式）がある
+  - Pages Router
+  - App Router
+- Next.js の Pages Router では以下の 4 つのレンダリング方式を選択できる
+  - SSR
+  - SSG
+  - ISR
+  - CSR
+- React Server Components とは、コンポーネントを「サーバー側でレンダリングされるコンポーネント」と「クライアント側でレンダリングされるコンポーネント」に分ける技術
+- Next.js の App Router では、デフォルトで作成したコンポーネントがサーバーコンポーネントになる
+  - クライアントコンポーネントにするには`use client;`を記述する必要がある
+- RSC と SSR を組み合わせることで、初期表示を早めつつ、クライアント側に送信する JavaScript の量を抑えることができる
+- Suspense と React Server Components を使うことで、SSR を使用するサーバー側でもコンポーネント単位の非同期的なデータ取得が可能となる
+
+## おわりに
+
+//
 
 ### 主な参考資料
 
-ありがとうございました。
 参考 1: 一言で理解する React(https://zenn.dev/uhyo/articles/react-server-components-multi-stage)
 参考 2: React Server Components – How and Why You Should Use Them in Your Code(https://www.freecodecamp.org/news/how-to-use-react-server-components/)
 参考 3: What's "Next" JS Meetup(https://www.youtube.com/watch?v=WHMm6w41_WI&ab_channel=TimeeEngineering)
@@ -479,24 +837,5 @@ JS の bundle サイズが減ることを見せる
 参考 12: Render and Commit(https://react.dev/learn/render-and-commit)
 参考 13: Making Sense of React Server Components(https://www.joshwcomeau.com/react/server-components/)
 
----
-
 ※ChatGPT で誤字脱字等の修正
-※先ずはブログに分かりやすくまとめる->プレゼンの本を踏襲しつつ LT 資料を作る
-※他にも本とか資料とか漁りまくる
-※App Router でのレンダリング実装。getSSP とかはないはず。どういう仕組み？
-※Suspense も入れる？どういう関係性？: https://youtu.be/A78v05JSyqg?si=PIbyu-_mpuKwQWOk
-->一言でいえば、コンポーネントを「ローディング中なのでまだレンダリングできない」という状態にすることができるのが特徴
-->React はコンポーネントをレンダリングして DOM（など）に反映することが役割のライブラリなので、ローディングできないコンポーネントがあるということはレンダリング結果が無くて DOM への反映もできないということになってしまいます
-->そこで、Suspense というコンポーネントが、内部でレンダリングが失敗したコンポーネントのハンドリングを担当してくれます。これはまるで JavaScript の try-catch 文のようです（実際、Suspense の機構と、React の既存機能である ErrorBoundary の機構はとても似ています）。
-※Suspense は、ラップした中のコンポーネント内で非同期処理を待機している間は、fallback に指定したコンポーネントを代わりに表示する
-->データ取得などの間に、ローディング中とかで使う。これまでは、それらをステイト管理して、条件分岐で表示を切り替えていたが、もうその必要はない
-※やはり、SSR と RSC の違いがいまいち掴めない。。実験できない？
-※Suspense と RSC の相性も。関係性も
-※Next.js から直接 DB にアクセスしてもいい？逆に BFF を挟むメリットは？DB とか API とか関係なく統一的にデータアクセスが行える？
-
-究極に分かりやすくする。読者のことを完璧にイメージする。最後にまとめるだけでなく、途中にまとめを挟む。
-これまでブログに投稿してうまくいかなかった（フォロワー増えなかった）から、何かを変えないといけない。Qiita に投稿する
-Qiita でバズらせる。究極の分かりやすさ。
-ChatGPT で遂行。多くの資料を読む。
-自分なりの価値も付加する。
+※読者の視点を考える
