@@ -394,6 +394,7 @@ SSR でデータ取得をする場合、RSC を使用してサーバーコンポ
 - Next.js の App Router では、デフォルトで作成したコンポーネントがサーバーコンポーネントになる
   - クライアントコンポーネントにするには`use client;`を記述する必要がある
 - RSC と SSR を組み合わせることで、初期表示を早めつつ、クライアント側に送信する JavaScript の量を抑えることができる
+- Suspense は、useState 等に頼らずに「ローディング中」を表現できる機能です。
 - Suspense と React Server Components を使うことで、SSR を使用するサーバー側でもコンポーネント単位の非同期的なデータ取得が可能となる
 
 ### 実際に RSC・App Router を触ってみる
@@ -815,6 +816,7 @@ export default function Loading() {
 - Next.js の App Router では、デフォルトで作成したコンポーネントがサーバーコンポーネントになる
   - クライアントコンポーネントにするには`use client;`を記述する必要がある
 - RSC と SSR を組み合わせることで、初期表示を早めつつ、クライアント側に送信する JavaScript の量を抑えることができる
+- Suspense は、useState 等に頼らずに「ローディング中」を表現できる機能です。
 - Suspense と React Server Components を使うことで、SSR を使用するサーバー側でもコンポーネント単位の非同期的なデータ取得が可能となる
 
 ## おわりに
