@@ -836,6 +836,7 @@ export default function Loading() {
 参考 11: Next.js から学ぶ Web レンダリング ~React 誕生以前から App Router with RSC までの流れ~(https://zenn.dev/suzu_4/articles/2e6dbb25c12ee5)
 参考 12: Render and Commit(https://react.dev/learn/render-and-commit)
 参考 13: Making Sense of React Server Components(https://www.joshwcomeau.com/react/server-components/)
+参考 14: Suspense(https://react.dev/reference/react/Suspense)
 
 ※ChatGPT で誤字脱字等の修正
 ※読者の視点を考える
