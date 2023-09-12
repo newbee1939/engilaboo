@@ -840,6 +840,11 @@ export default function Loading() {
 参考 13: Making Sense of React Server Components(https://www.joshwcomeau.com/react/server-components/)
 参考 14: Suspense(https://react.dev/reference/react/Suspense)
 参考 15: Hydrating server-rendered HTML(https://react.dev/reference/react-dom/client/hydrateRoot#hydrating-server-rendered-html)
+参考 16: 今後の React ではどの範囲を Suspense で囲むかという設計が重要になってくる(https://tech.anotherworks.co.jp/article/react-suspense-react18)
+参考 17: やっと React Server Components が腑に落ちた(https://qiita.com/naruto/items/c17c79ec5c2a0c7c4686)
+参考 18: Suspense はどのような機能なのか(https://zenn.dev/uhyo/books/react-concurrent-handson/viewer/what-is-suspense)
+参考 19: React 18 と Suspense の基本 ─ フレームワークの選択や React Server Components など新しいベストプラクティスを学ぶ(https://eh-career.com/engineerhub/entry/2023/07/14/093000)
+参考 20: より速い WEB を目指す Next.js / nextjs-make-the-web-faster(https://speakerdeck.com/takefumiyoshii/nextjs-make-the-web-faster)
 
 ※ChatGPT で誤字脱字等の修正
 ※読者の視点を考える
