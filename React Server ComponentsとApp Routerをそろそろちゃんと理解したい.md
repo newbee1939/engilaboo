@@ -245,7 +245,7 @@ RSC により、データ取得等をより DB に近いサーバー側で実行
 - console.log はブラウザのコンソールではなく、サーバーのコンソールに情報を記録する
 - onClick や onChange などのイベントリスナーは使用できない
 - 状態管理（useState）と効果管理（useEffect）は使用できない
-- サーバーコンポーネントはクライアントコンポーネントをインポートしてレンダリングできが、クライアントコンポーネントはその中のサーバーコンポーネントをレンダリングできない
+- サーバーコンポーネントはクライアントコンポーネントをインポートしてレンダリングできるが、クライアントコンポーネントはその中のサーバーコンポーネントをレンダリングできない
 
 comment: ただし、RSC を使えば無条件にサイズが減少するというわけではないようです。詳しくは以下を参考にしてください。https://qiita.com/uhyo/items/06b0cd7292256f66d7b7
 
@@ -828,27 +828,21 @@ https://www.publickey1.jp/blog/23/astro_30javascriptspa.html
 
 ### 主な参考資料
 
-参考 1: 一言で理解する React(https://zenn.dev/uhyo/articles/react-server-components-multi-stage)
-イマココ
-参考 2: React Server Components – How and Why You Should Use Them in Your Code(https://www.freecodecamp.org/news/how-to-use-react-server-components/)
-参考 3: What's "Next" JS Meetup(https://www.youtube.com/watch?v=WHMm6w41_WI&ab_channel=TimeeEngineering)
-参考 4: Next.js 公式ドキュメント(https://nextjs.org/docs)
-参考 5: React Server Components の仕組み：詳細ガイド(https://postd.cc/how-react-server-components-work/)
-参考 6: Nextjs で理解する React Server Components 徹底解説【React18】(https://youtu.be/A78v05JSyqg?si=EJiKhE35K11TbcGe)
-参考 7: Understanding React Server Components(https://vercel.com/blog/understanding-react-server-components)
-参考 8: React Server Components with Next.js(https://vercel.com/blog/everything-about-react-server-components)
-参考 9: Server-side rendering(https://www.apollographql.com/docs/react/performance/server-side-rendering/)
-参考 10: How React 18 Improves Application Performance(https://vercel.com/blog/how-react-18-improves-application-performance)
-参考 11: Next.js から学ぶ Web レンダリング ~React 誕生以前から App Router with RSC までの流れ~(https://zenn.dev/suzu_4/articles/2e6dbb25c12ee5)
-参考 12: Render and Commit(https://react.dev/learn/render-and-commit)
-参考 13: Making Sense of React Server Components(https://www.joshwcomeau.com/react/server-components/)
-参考 14: Suspense(https://react.dev/reference/react/Suspense)
-参考 15: Hydrating server-rendered HTML(https://react.dev/reference/react-dom/client/hydrateRoot#hydrating-server-rendered-html)
-参考 16: 今後の React ではどの範囲を Suspense で囲むかという設計が重要になってくる(https://tech.anotherworks.co.jp/article/react-suspense-react18)
-参考 17: やっと React Server Components が腑に落ちた(https://qiita.com/naruto/items/c17c79ec5c2a0c7c4686)
-参考 18: Suspense はどのような機能なのか(https://zenn.dev/uhyo/books/react-concurrent-handson/viewer/what-is-suspense)
-参考 19: React 18 と Suspense の基本 ─ フレームワークの選択や React Server Components など新しいベストプラクティスを学ぶ(https://eh-career.com/engineerhub/entry/2023/07/14/093000)
-参考 20: より速い WEB を目指す Next.js / nextjs-make-the-web-faster(https://speakerdeck.com/takefumiyoshii/nextjs-make-the-web-faster)
+参考: 一言で理解する React(https://zenn.dev/uhyo/articles/react-server-components-multi-stage)
+参考: Next.js 公式ドキュメント(https://nextjs.org/docs)
+参考: What's "Next" JS Meetup(https://www.youtube.com/watch?v=WHMm6w41_WI&ab_channel=TimeeEngineering)
+参考: React Server Components の仕組み：詳細ガイド(https://postd.cc/how-react-server-components-work/)
+参考: Nextjs で理解する React Server Components 徹底解説【React18】(https://youtu.be/A78v05JSyqg?si=EJiKhE35K11TbcGe)
+参考: Understanding React Server Components(https://vercel.com/blog/understanding-react-server-components)
+参考: How React 18 Improves Application Performance(https://vercel.com/blog/how-react-18-improves-application-performance)
+参考: Next.js から学ぶ Web レンダリング ~React 誕生以前から App Router with RSC までの流れ~(https://zenn.dev/suzu_4/articles/2e6dbb25c12ee5)
+参考: Render and Commit(https://react.dev/learn/render-and-commit)
+参考: Making Sense of React Server Components(https://www.joshwcomeau.com/react/server-components/)
+参考: Suspense(https://react.dev/reference/react/Suspense)
+参考: Hydrating server-rendered HTML(https://react.dev/reference/react-dom/client/hydrateRoot#hydrating-server-rendered-html)
+参考: やっと React Server Components が腑に落ちた(https://qiita.com/naruto/items/c17c79ec5c2a0c7c4686)
+参考: React 18 と Suspense の基本 ─ フレームワークの選択や React Server Components など新しいベストプラクティスを学ぶ(https://eh-career.com/engineerhub/entry/2023/07/14/093000)
+参考: より速い WEB を目指す Next.js / nextjs-make-the-web-faster(https://speakerdeck.com/takefumiyoshii/nextjs-make-the-web-faster)
 
 ※ChatGPT で誤字脱字等の修正
 ※読者の視点を考える
