@@ -821,11 +821,15 @@ export default function Loading() {
 
 ## おわりに
 
-//
+SSR に回帰する？
+https://www.publickey1.jp/blog/23/webssrdenoisomorphic_javascriptuniversal_javascript.html
+
+https://www.publickey1.jp/blog/23/astro_30javascriptspa.html
 
 ### 主な参考資料
 
 参考 1: 一言で理解する React(https://zenn.dev/uhyo/articles/react-server-components-multi-stage)
+イマココ
 参考 2: React Server Components – How and Why You Should Use Them in Your Code(https://www.freecodecamp.org/news/how-to-use-react-server-components/)
 参考 3: What's "Next" JS Meetup(https://www.youtube.com/watch?v=WHMm6w41_WI&ab_channel=TimeeEngineering)
 参考 4: Next.js 公式ドキュメント(https://nextjs.org/docs)
