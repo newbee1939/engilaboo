@@ -341,7 +341,7 @@ Next.js の getServerSideProps を使ってデータの取得はできていま�
 
 しかし、この状況が Suspense と React Server Components の登場で変わります。
 
-Suspense とは、useState 等に頼らずに「ローディング中」を表現できる機能です。
+Suspense とは、useState 等に頼らずに「ローディング中」を宣言的に表現できる機能です。
 
 例えば、以下のようなコンポーネントを用意します。
 
