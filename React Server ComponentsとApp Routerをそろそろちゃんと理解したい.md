@@ -837,6 +837,7 @@ export default function Loading() {
 参考 12: Render and Commit(https://react.dev/learn/render-and-commit)
 参考 13: Making Sense of React Server Components(https://www.joshwcomeau.com/react/server-components/)
 参考 14: Suspense(https://react.dev/reference/react/Suspense)
+参考 15: Hydrating server-rendered HTML(https://react.dev/reference/react-dom/client/hydrateRoot#hydrating-server-rendered-html)
 
 ※ChatGPT で誤字脱字等の修正
 ※読者の視点を考える
