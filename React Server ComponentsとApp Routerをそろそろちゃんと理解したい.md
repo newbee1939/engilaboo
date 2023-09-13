@@ -834,15 +834,9 @@ https://www.publickey1.jp/blog/23/astro_30javascriptspa.html
 参考: React Server Components の仕組み：詳細ガイド(https://postd.cc/how-react-server-components-work/)
 参考: Nextjs で理解する React Server Components 徹底解説【React18】(https://youtu.be/A78v05JSyqg?si=EJiKhE35K11TbcGe)
 参考: Understanding React Server Components(https://vercel.com/blog/understanding-react-server-components)
-参考: How React 18 Improves Application Performance(https://vercel.com/blog/how-react-18-improves-application-performance)
 参考: Next.js から学ぶ Web レンダリング ~React 誕生以前から App Router with RSC までの流れ~(https://zenn.dev/suzu_4/articles/2e6dbb25c12ee5)
 参考: Render and Commit(https://react.dev/learn/render-and-commit)
 参考: Making Sense of React Server Components(https://www.joshwcomeau.com/react/server-components/)
-参考: Suspense(https://react.dev/reference/react/Suspense)
-参考: Hydrating server-rendered HTML(https://react.dev/reference/react-dom/client/hydrateRoot#hydrating-server-rendered-html)
-参考: やっと React Server Components が腑に落ちた(https://qiita.com/naruto/items/c17c79ec5c2a0c7c4686)
-参考: React 18 と Suspense の基本 ─ フレームワークの選択や React Server Components など新しいベストプラクティスを学ぶ(https://eh-career.com/engineerhub/entry/2023/07/14/093000)
-参考: より速い WEB を目指す Next.js / nextjs-make-the-web-faster(https://speakerdeck.com/takefumiyoshii/nextjs-make-the-web-faster)
 
 ※ChatGPT で誤字脱字等の修正
 ※読者の視点を考える
