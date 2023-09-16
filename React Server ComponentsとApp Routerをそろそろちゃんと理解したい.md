@@ -10,7 +10,30 @@
 - Suspense とは何か？
 - App Router とは何か？
 
-少しでも私と同じような思いを抱えている方々の助けになれば幸いです。
+少しでも私と同じような悩みを抱えている方々の助けになれば幸いです。
+
+## TL;DR
+
+- React は UI を簡単に構築するための JavaScript ライブラリ
+- Next.js は React のフレームワーク
+- React は以下の流れでレンダリング（CSR）を行う
+  1. レンダリングのトリガーを検知
+  2. ブラウザレンダリングする内容の決定
+  3. 変更を DOM に適用
+- Next.js には以下の二つのモード（ルーティング方式）がある
+  - Pages Router
+  - App Router
+- Next.js の Pages Router では以下の 4 つのレンダリング方式を選択できる
+  - SSR
+  - SSG
+  - ISR
+  - CSR
+- React Server Components とは、コンポーネントを「サーバー側でレンダリングされるコンポーネント」と「クライアント側でレンダリングされるコンポーネント」に分ける技術
+- Next.js の App Router では、デフォルトで作成したコンポーネントがサーバーコンポーネントになる
+  - クライアントコンポーネントにするには`use client;`を記述する必要がある
+- RSC と SSR を組み合わせることで、初期表示を早めつつ、クライアント側に送信する JavaScript の量を抑えることができる
+- Suspense は、useState 等に頼らずに「ローディング中」を表現できる機能
+- Suspense と React Server Components を使用することで、SSR を使用するサーバー側でもコンポーネント単位の非同期的なデータ取得が可能となる
 
 ## React と Next.js について
 
@@ -836,7 +859,7 @@ https://www.publickey1.jp/blog/23/astro_30javascriptspa.html
 参考: Understanding React Server Components(https://vercel.com/blog/understanding-react-server-components)
 参考: Next.js から学ぶ Web レンダリング ~React 誕生以前から App Router with RSC までの流れ~(https://zenn.dev/suzu_4/articles/2e6dbb25c12ee5)
 参考: Render and Commit(https://react.dev/learn/render-and-commit)
-参考: Making Sense of React Server Components(https://www.joshwcomeau.com/react/server-components/)
 
 ※ChatGPT で誤字脱字等の修正
 ※読者の視点を考える
+※この記事の図を参考にする:https://www.joshwcomeau.com/react/server-components/
